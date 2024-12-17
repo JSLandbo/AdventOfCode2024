@@ -76,9 +76,7 @@ public sealed class Day06 : BaseDay
     private static int DoesBlockadeCauseInfiniteLoop(char[,] map, (int X, int Y) position, (int X,int Y) blockade)
     {
         if (map[blockade.Y, blockade.X] != '.') return 0; // Blockade must be on empty space
-        var mapWidth = map.GetLength(1); // Cache map dimensions
-        var mapHeight = map.GetLength(0);
-        var visited = new bool[mapHeight, mapWidth, 4];
+        var visited = new bool[map.GetLength(0), map.GetLength(1), 4];
         var direction = (X:0, Y:-1); // Move up initially
         var directionIndex = 0; 
         while (true)
