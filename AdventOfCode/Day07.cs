@@ -1,6 +1,6 @@
 ﻿namespace AdventOfCode;
 
-public class Day07 : BaseDay
+public sealed class Day07 : BaseDay
 {
     private readonly string[] _input;
 

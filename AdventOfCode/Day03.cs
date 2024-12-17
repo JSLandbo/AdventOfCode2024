@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 namespace AdventOfCode;
 
-public class Day03 : BaseDay
+public sealed class Day03 : BaseDay
 {
     private readonly string _input;
 
