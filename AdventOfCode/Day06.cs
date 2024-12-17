@@ -85,8 +85,7 @@ public sealed class Day06 : BaseDay
             visited[position.Y, position.X, directionIndex] = true; 
             var nextPosition = (X:position.X + direction.X, Y:position.Y + direction.Y);
             if (TrailingOffMap2D(map, nextPosition)) return 0; // Trailing off map, no infinite loop.
-            var nextTile = map[nextPosition.Y, nextPosition.X];
-            if (nextTile == '#' || nextPosition == blockade)
+            if (map[nextPosition.Y, nextPosition.X] == '#' || nextPosition == blockade)
             {   // We will hit a blockade if we continue, turn right.
                 directionIndex = (directionIndex + 1) % 4;
                 direction = directionIndex switch
