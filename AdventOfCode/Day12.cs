@@ -15,7 +15,7 @@ public sealed class Day12 : BaseDay
         var groups = GetGroups(map);
         var results = groups.Select(group => {
             var area = GetArea(group);
-            var circumference = GetCircumference(group.Select(e => (e.X, e.Y)));
+            var circumference = GetCircumference(group.Select(e => (e.X, e.Y)).ToArray());
             return new
             {
                 Area = area,
@@ -33,7 +33,7 @@ public sealed class Day12 : BaseDay
         var map = _input.Select(e => e.ToArray()).ToArray();
         var results = GetGroups(map).Select(group => {
             var area = GetArea(group);
-            var sides = GetSides(group.Select(e => (e.X, e.Y)).ToList());
+            var sides = GetSides(group.Select(e => (e.X, e.Y)).ToArray());
             return new 
             {
                 Area = area,
@@ -48,7 +48,7 @@ public sealed class Day12 : BaseDay
 
     // Helper methods
     
-    private static int GetSides(List<(int X, int Y)> group)
+    private static int GetSides((int X, int Y)[] group)
     {
         var left = new List<(int PosX, int PosY)>();
         var up = new List<(int PosX, int PosY)>();
@@ -91,8 +91,8 @@ public sealed class Day12 : BaseDay
         
         return leftiesCount + uppiesCount + downiesCount + rightiesCount;
     }
-
-    private static int GetCircumference(IEnumerable<(int X, int Y)> group)
+    
+    private static int GetCircumference((int X, int Y)[] group)
     {
         var sum = 0;
         var positionSet = new HashSet<(int X, int Y)>(group);
