@@ -42,7 +42,7 @@ public sealed class Day05 : BaseDay
                 for (var j = i - 1; j >= 0 && ok; j--)
                 {
                     if (!rules.TryGetValue(main, out var rule)) continue;
-                    if (rule.Any(e => e == lines[h][j])) ok = false;
+                    if (rule.Contains(lines[h][j])) ok = false;
                 }
             }
             (ok ? correctLines : incorrectLines).Add(lines[h]);
@@ -80,7 +80,7 @@ public sealed class Day05 : BaseDay
                 for (var j = i - 1; j >= 0 && ok; j--)
                 {
                     if (!rules.TryGetValue(main, out var rule)) continue;
-                    if (rule.Any(e => e == lines[h][j])) ok = false;
+                    if (rule.Contains(lines[h][j])) ok = false;
                 }
             }
             (ok ? correctLines : incorrectLines).Add(lines[h]);
