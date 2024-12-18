@@ -54,26 +54,26 @@ public sealed class Day12 : BaseDay
         var up = new HashSet<(int PosX, int PosY)>();
         var right = new HashSet<(int PosX, int PosY)>();
         var down = new HashSet<(int PosX, int PosY)>();
-    
+        
         foreach (var pos in figure)
         {
-            if (!figure.Contains((pos.X - 1, pos.Y))) right.Add((pos.X, pos.Y));  // Left check
-            if (!figure.Contains((pos.X + 1, pos.Y))) left.Add((pos.X, pos.Y));   // Right check
-            if (!figure.Contains((pos.X, pos.Y - 1))) down.Add((pos.X, pos.Y));   // Below check
-            if (!figure.Contains((pos.X, pos.Y + 1))) up.Add((pos.X, pos.Y));     // Above check
+            if (!figure.Contains(MoveLeft(pos))) left.Add(pos);
+            if (!figure.Contains(MoveRight(pos))) right.Add(pos);
+            if (!figure.Contains(MoveUp(pos))) up.Add(pos);
+            if (!figure.Contains(MoveDown(pos))) down.Add(pos);
         }
         
-        var leftiesCount = GetNonAdjacentWallsOnSpecificSide(left, (0, -1), true);
-        var uppiesCount = GetNonAdjacentWallsOnSpecificSide(up, (1, 0), false);
-        var downiesCount = GetNonAdjacentWallsOnSpecificSide(down, (-1, 0), false);
-        var rightiesCount = GetNonAdjacentWallsOnSpecificSide(right, (0, 1), true);
+        var leftWalls = GetNonAdjacentWalls(left, Dirs.up);
+        var topWalls = GetNonAdjacentWalls(up, Dirs.right);
+        var rightWalls = GetNonAdjacentWalls(right, Dirs.down);
+        var bottomWalls = GetNonAdjacentWalls(down, Dirs.left);
         
-        return leftiesCount + uppiesCount + downiesCount + rightiesCount;
+        return leftWalls + topWalls + bottomWalls + rightWalls;
     }
 
-    private static int GetNonAdjacentWallsOnSpecificSide(HashSet<(int PosX, int PosY)> positions, (int XO, int YO) offset, bool horizontal)
+    private static int GetNonAdjacentWalls(HashSet<(int PosX, int PosY)> positions, (int X, int Y) direction)
     {
-        return positions.Count(pos => !positions.Contains((pos.PosX + offset.XO, pos.PosY + offset.YO)));
+        return positions.Count(pos => !positions.Contains((pos.PosX + direction.X, pos.PosY + direction.Y)));
     }
     
     private static int GetCircumference((int X, int Y)[] group)
@@ -83,10 +83,10 @@ public sealed class Day12 : BaseDay
         foreach (var pos in group)
         {
             var sides = 4;
-            if (figure.Contains((pos.X - 1, pos.Y))) sides--;  // Left
-            if (figure.Contains((pos.X + 1, pos.Y))) sides--;  // Right
-            if (figure.Contains((pos.X, pos.Y - 1))) sides--;  // Down
-            if (figure.Contains((pos.X, pos.Y + 1))) sides--;  // Up
+            if (figure.Contains(MoveLeft(pos))) sides--; 
+            if (figure.Contains(MoveRight(pos))) sides--;  
+            if (figure.Contains(MoveDown(pos))) sides--;  
+            if (figure.Contains(MoveUp(pos))) sides--;  
             sum += sides;
         }
         return sum;
@@ -109,18 +109,32 @@ public sealed class Day12 : BaseDay
                 figures.Add(figure);
             }
         }
-
         return figures;
     }
 
     private static void GetAdjacent(char[][] map, bool[,] visited, char current, int x, int y, List<(int X, int Y, char C)> figure)
     {
         if (visited[y,x]) return;
+        
         figure.Add((x, y, current));
+        
         visited[y, x] = true;
-        if (x != 0 && map[y][x - 1] == current) GetAdjacent(map, visited, current, x - 1, y, figure); // Left, within width bounds
-        if (x != map[0].Length - 1 && map[y][x + 1] == current) GetAdjacent(map, visited, current, x + 1, y, figure); // Right, within width bounds
-        if (y != 0 && map[y - 1][x] == current) GetAdjacent(map, visited, current, x, y - 1, figure); // Top, within height bounds
-        if (y != map.Length - 1 && map[y + 1][x] == current) GetAdjacent(map, visited, current, x, y + 1, figure); // Bottom, within height bounds
+        
+        if (LeftIsSame()) GetAdjacent(map, visited, current, x - 1, y, figure); // Left, within width bounds
+        if (RightIsSame()) GetAdjacent(map, visited, current, x + 1, y, figure); // Right, within width bounds
+        if (UpIsSame()) GetAdjacent(map, visited, current, x, y - 1, figure); // Top, within height bounds
+        if (DownIsSame()) GetAdjacent(map, visited, current, x, y + 1, figure); // Bottom, within height bounds
+        return;
+
+        bool LeftIsSame() => x != 0 && map[y][x - 1] == current;
+        bool RightIsSame() => x != map[0].Length - 1 && map[y][x + 1] == current;
+        bool UpIsSame() => y != 0 && map[y - 1][x] == current;
+        bool DownIsSame() => y != map.Length - 1 && map[y + 1][x] == current;
     }
+
+    private static readonly ((int, int) up, (int, int) right, (int, int) down, (int, int) left) Dirs = ((0, -1), (1, 0), (0, 1), (-1, 0));
+    private static (int X, int Y) MoveLeft((int X, int Y) pos) => (pos.X - 1, pos.Y);
+    private static (int X, int Y) MoveUp((int X, int Y) pos) => (pos.X, pos.Y - 1);
+    private static (int X, int Y) MoveRight((int X, int Y) pos) => (pos.X + 1, pos.Y);
+    private static (int X, int Y) MoveDown((int X, int Y) pos) => (pos.X, pos.Y + 1);
 }
