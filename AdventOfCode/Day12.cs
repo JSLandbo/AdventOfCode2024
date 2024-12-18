@@ -33,7 +33,7 @@ public sealed class Day12 : BaseDay
         var map = _input.Select(e => e.ToArray()).ToArray();
         var results = GetGroups(map).Select(group => {
             var area = GetArea(group);
-            var sides = GetSides(group.Select(e => (e.X, e.Y)).ToArray());
+            var sides = GetSides(group.Select(e => (e.X, e.Y)).ToHashSet());
             return new 
             {
                 Area = area,
@@ -48,12 +48,12 @@ public sealed class Day12 : BaseDay
 
     // Helper methods
     
-    private static int GetSides((int X, int Y)[] group)
+    private static int GetSides(HashSet<(int X, int Y)> group)
     {
-        var left = new List<(int PosX, int PosY)>();
-        var up = new List<(int PosX, int PosY)>();
-        var right = new List<(int PosX, int PosY)>();
-        var down = new List<(int PosX, int PosY)>();
+        var left = new HashSet<(int PosX, int PosY)>();
+        var up = new HashSet<(int PosX, int PosY)>();
+        var right = new HashSet<(int PosX, int PosY)>();
+        var down = new HashSet<(int PosX, int PosY)>();
     
         foreach (var pos in group)
         {
@@ -62,34 +62,18 @@ public sealed class Day12 : BaseDay
             if (!group.Contains((pos.X, pos.Y - 1))) down.Add((pos.X, pos.Y));   // Below check
             if (!group.Contains((pos.X, pos.Y + 1))) up.Add((pos.X, pos.Y));     // Above check
         }
-
-        var leftiesCount = left
-            .GroupBy(e => e.PosX)
-            .Sum(gp => gp.Count(
-                    pos1 => !gp.Contains((pos1.PosX, pos1.PosY - 1))
-                )
-            );
-        var uppiesCount = up
-            .GroupBy(e => e.PosY)
-            .Sum(gp => gp.Count(
-                    pos1 => !gp.Contains((pos1.PosX + 1, pos1.PosY))
-                )
-            );
-        var downiesCount = down
-            .GroupBy(e => e.PosY)
-            .Sum(gp => gp.Count(
-                    pos1 => !gp.Contains((pos1.PosX - 1, pos1.PosY))
-                )
-            );
-        var rightiesCount = right
-            .GroupBy(e => e.PosX)
-            .Sum(
-                gp => gp.Count(
-                    pos1 => !gp.Contains((pos1.PosX, pos1.PosY + 1))
-                )
-            );
+        
+        var leftiesCount = GetNonAdjacentWallsOnSpecificSide(left, (0, -1), true);
+        var uppiesCount = GetNonAdjacentWallsOnSpecificSide(up, (1, 0), false);
+        var downiesCount = GetNonAdjacentWallsOnSpecificSide(down, (-1, 0), false);
+        var rightiesCount = GetNonAdjacentWallsOnSpecificSide(right, (0, 1), true);
         
         return leftiesCount + uppiesCount + downiesCount + rightiesCount;
+    }
+
+    private static int GetNonAdjacentWallsOnSpecificSide(HashSet<(int PosX, int PosY)> positions, (int XO, int YO) offset, bool horizontal)
+    {
+        return positions.Count(pos => !positions.Contains((pos.PosX + offset.XO, pos.PosY + offset.YO)));
     }
     
     private static int GetCircumference((int X, int Y)[] group)
@@ -132,19 +116,14 @@ public sealed class Day12 : BaseDay
     private static void GetGroup(char[][] map, char current, int x, int y, List<(int X, int Y, char C)> group)
     {
         if (current == ' ') return;
-    
+        
         group.Add((x, y, current));
-    
-        var left = x == 0;
-        var top = y == 0;
-        var bottom = y == map.Length - 1;
-        var right = x == map[0].Length - 1;
-
+        
         map[y][x] = ' ';
-
-        if (!left && map[y][x - 1] == current) GetGroup(map, current, x - 1, y, group); // Left
-        if (!right && map[y][x + 1] == current) GetGroup(map, current, x + 1, y, group); // Right
-        if (!top && map[y - 1][x] == current) GetGroup(map, current, x, y - 1, group); // Top
-        if (!bottom && map[y + 1][x] == current) GetGroup(map, current, x, y + 1, group); // Bottom
+        
+        if (x != 0 && map[y][x - 1] == current) GetGroup(map, current, x - 1, y, group); // Left, within bounds
+        if (x != map[0].Length - 1 && map[y][x + 1] == current) GetGroup(map, current, x + 1, y, group); // Right, within bounds
+        if (y != 0 && map[y - 1][x] == current) GetGroup(map, current, x, y - 1, group); // Top, within bounds
+        if (y != map.Length - 1 && map[y + 1][x] == current) GetGroup(map, current, x, y + 1, group); // Bottom, within bounds
     }
 }
