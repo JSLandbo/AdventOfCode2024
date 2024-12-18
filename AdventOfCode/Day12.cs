@@ -12,7 +12,7 @@ public sealed class Day12 : BaseDay
     public override ValueTask<string> Solve_1()
     {
         var map = _input.Select(e => e.ToArray()).ToArray();
-        var groups = GetGroups(map);
+        var groups = GetFigures(map);
         var results = groups.Select(group => {
             var area = GetArea(group);
             var circumference = GetCircumference(group.Select(e => (e.X, e.Y)).ToArray());
@@ -31,7 +31,7 @@ public sealed class Day12 : BaseDay
     public override ValueTask<string> Solve_2()
     {
         var map = _input.Select(e => e.ToArray()).ToArray();
-        var results = GetGroups(map).Select(group => {
+        var results = GetFigures(map).Select(group => {
             var area = GetArea(group);
             var sides = GetSides(group.Select(e => (e.X, e.Y)).ToHashSet());
             return new 
@@ -48,19 +48,19 @@ public sealed class Day12 : BaseDay
 
     // Helper methods
     
-    private static int GetSides(HashSet<(int X, int Y)> group)
+    private static int GetSides(HashSet<(int X, int Y)> figure)
     {
         var left = new HashSet<(int PosX, int PosY)>();
         var up = new HashSet<(int PosX, int PosY)>();
         var right = new HashSet<(int PosX, int PosY)>();
         var down = new HashSet<(int PosX, int PosY)>();
     
-        foreach (var pos in group)
+        foreach (var pos in figure)
         {
-            if (!group.Contains((pos.X - 1, pos.Y))) right.Add((pos.X, pos.Y));  // Left check
-            if (!group.Contains((pos.X + 1, pos.Y))) left.Add((pos.X, pos.Y));   // Right check
-            if (!group.Contains((pos.X, pos.Y - 1))) down.Add((pos.X, pos.Y));   // Below check
-            if (!group.Contains((pos.X, pos.Y + 1))) up.Add((pos.X, pos.Y));     // Above check
+            if (!figure.Contains((pos.X - 1, pos.Y))) right.Add((pos.X, pos.Y));  // Left check
+            if (!figure.Contains((pos.X + 1, pos.Y))) left.Add((pos.X, pos.Y));   // Right check
+            if (!figure.Contains((pos.X, pos.Y - 1))) down.Add((pos.X, pos.Y));   // Below check
+            if (!figure.Contains((pos.X, pos.Y + 1))) up.Add((pos.X, pos.Y));     // Above check
         }
         
         var leftiesCount = GetNonAdjacentWallsOnSpecificSide(left, (0, -1), true);
@@ -79,14 +79,14 @@ public sealed class Day12 : BaseDay
     private static int GetCircumference((int X, int Y)[] group)
     {
         var sum = 0;
-        var positionSet = new HashSet<(int X, int Y)>(group);
+        var figure = new HashSet<(int X, int Y)>(group);
         foreach (var pos in group)
         {
             var sides = 4;
-            if (positionSet.Contains((pos.X - 1, pos.Y))) sides--;  // Left
-            if (positionSet.Contains((pos.X + 1, pos.Y))) sides--;  // Right
-            if (positionSet.Contains((pos.X, pos.Y - 1))) sides--;  // Down
-            if (positionSet.Contains((pos.X, pos.Y + 1))) sides--;  // Up
+            if (figure.Contains((pos.X - 1, pos.Y))) sides--;  // Left
+            if (figure.Contains((pos.X + 1, pos.Y))) sides--;  // Right
+            if (figure.Contains((pos.X, pos.Y - 1))) sides--;  // Down
+            if (figure.Contains((pos.X, pos.Y + 1))) sides--;  // Up
             sum += sides;
         }
         return sum;
@@ -94,36 +94,33 @@ public sealed class Day12 : BaseDay
 
     private static int GetArea(List<(int X, int Y, char C)> group) => group.Count;
 
-    private static List<List<(int X, int Y, char C)>> GetGroups(char[][] map)
+    private static List<List<(int X, int Y, char C)>> GetFigures(char[][] map)
     {
-        var groups = new List<List<(int X, int Y, char C)>>();
-
-        for (var i = 0; i < map.Length; i++)
+        var figures = new List<List<(int X, int Y, char C)>>();
+        var visited = new bool[map[0].Length, map.Length];
+        for (var x = 0; x < map.Length; x++)
         {
-            for (var j = 0; j < map[i].Length; j++)
+            for (var y = 0; y < map[x].Length; y++)
             {
-                var ch = map[j][i];
-                if (ch == ' ') continue;
-                var group = new List<(int X, int Y, char C)>();
-                GetGroup(map, ch, i, j, group);
-                groups.Add(group);
+                var ch = map[y][x];
+                if (visited[y,x]) continue;
+                var figure = new List<(int X, int Y, char C)>();
+                GetAdjacent(map, visited, ch, x, y, figure);
+                figures.Add(figure);
             }
         }
 
-        return groups;
+        return figures;
     }
 
-    private static void GetGroup(char[][] map, char current, int x, int y, List<(int X, int Y, char C)> group)
+    private static void GetAdjacent(char[][] map, bool[,] visited, char current, int x, int y, List<(int X, int Y, char C)> figure)
     {
-        if (current == ' ') return;
-        
-        group.Add((x, y, current));
-        
-        map[y][x] = ' ';
-        
-        if (x != 0 && map[y][x - 1] == current) GetGroup(map, current, x - 1, y, group); // Left, within bounds
-        if (x != map[0].Length - 1 && map[y][x + 1] == current) GetGroup(map, current, x + 1, y, group); // Right, within bounds
-        if (y != 0 && map[y - 1][x] == current) GetGroup(map, current, x, y - 1, group); // Top, within bounds
-        if (y != map.Length - 1 && map[y + 1][x] == current) GetGroup(map, current, x, y + 1, group); // Bottom, within bounds
+        if (visited[y,x]) return;
+        figure.Add((x, y, current));
+        visited[y, x] = true;
+        if (x != 0 && map[y][x - 1] == current) GetAdjacent(map, visited, current, x - 1, y, figure); // Left, within width bounds
+        if (x != map[0].Length - 1 && map[y][x + 1] == current) GetAdjacent(map, visited, current, x + 1, y, figure); // Right, within width bounds
+        if (y != 0 && map[y - 1][x] == current) GetAdjacent(map, visited, current, x, y - 1, figure); // Top, within height bounds
+        if (y != map.Length - 1 && map[y + 1][x] == current) GetAdjacent(map, visited, current, x, y + 1, figure); // Bottom, within height bounds
     }
 }
