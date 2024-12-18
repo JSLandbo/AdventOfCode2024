@@ -29,10 +29,9 @@ public sealed class Day03 : BaseDay
         var going = true;
         for (var i = 0; i < _input.Length; i++)
         {
-            if (dos.Any(e => e == i)) going = true;
-            if (donts.Any(e => e == i)) going = false;
-            if (!going) continue;
-            builder.Append(_input[i]);
+            if (dos.Contains(i)) going = true;
+            if (donts.Contains(i)) going = false;
+            if (going) builder.Append(_input[i]);
         }
         var input = regex.Matches(builder.ToString());
         var sum = input.Sum(match => int.Parse(match.Groups[1].Value) * int.Parse(match.Groups[2].Value));

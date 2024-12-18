@@ -1,6 +1,4 @@
-﻿using System.Numerics;
-
-namespace AdventOfCode;
+﻿namespace AdventOfCode;
 
 public sealed class Day06 : BaseDay
 {
