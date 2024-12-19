@@ -24,7 +24,7 @@ public sealed class Day09 : BaseDay
     {
         var row = BuildBlocks(_input).ToArray();
         var compressed = CompressChunkedBlock((int[])row.Clone());
-        var result = compressed.Select((number, index) => number == -1 ? 0 : (long)number * index).Sum();
+        var result = compressed.Select((number, index) => number < 1 ? 0 : (long)number * index).Sum();
         return new ValueTask<string>($"{result}");
     }
 
