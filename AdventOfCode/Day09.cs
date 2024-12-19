@@ -43,7 +43,6 @@ public sealed class Day09 : BaseDay
                 break;
             }
         }
-
         return (rightIndex + 1, block);
     }
     
@@ -83,10 +82,7 @@ public sealed class Day09 : BaseDay
                 continue;
             }
             if (block[i] == num) count++;
-            if (block[i] != num)
-            {
-                return (i + 1, count);
-            }
+            if (block[i] != num) return (i + 1, count);
         }
         return (-1, 0);
     }
@@ -97,10 +93,7 @@ public sealed class Day09 : BaseDay
         for (var i = 0; i < maxIndex; i++)
         {
             if (block[i] == number) count++;
-            if (count >= length)
-            {
-                return i - length + 1;
-            };
+            if (count >= length) return i - length + 1;
             if (block[i] != number) count = 0;
         }
         return -1;
