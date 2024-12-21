@@ -11,16 +11,31 @@ public sealed class Day10 : BaseDay
 
     public override ValueTask<string> Solve_1()
     {
-        var map = new char[_input.Length, _input[0].Length]; // Map of the area
-        for (var i = 0; i < _input.Length; i++) // "i" is the row (Y)
-            for (var j = 0; j < _input[i].Length; j++) // "j" is the column (X)
-                map[i, j] = _input[i][j];
+        var (trailhead, map) = GetMap(_input);
 
         return default;
     }
 
     public override ValueTask<string> Solve_2()
     {
+        var (trailhead, map) = GetMap(_input);
+        
         return default;
+    }
+    
+    private static (List<(int x, int y)> trailheads, int[,] map) GetMap(string[] input)
+    {
+        List<(int x, int y)> trailheads = [];
+        var map = new int[input.Length, input[0].Length];
+        for (var y = 0; y < input.Length; y++) 
+        {
+            for (var x = 0; x < input[y].Length; x++) 
+            {
+                var n = input[y][x] - '0';
+                if (n == 0) trailheads.Add((x, y));
+                map[y, x] = n;
+            }
+        }
+        return (trailheads, map);
     }
 }
