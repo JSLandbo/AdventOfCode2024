@@ -1,6 +1,3 @@
-using System.Text;
-using System.Text.Json;
-
 namespace AdventOfCode;
 
 public sealed class Day09 : BaseDay

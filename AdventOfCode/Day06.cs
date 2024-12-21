@@ -50,16 +50,17 @@ public sealed class Day06 : BaseDay
     {
         var start = (X: 0, Y: 0); // Starting position        
         var map = new char[_input.Length, _input[0].Length]; // Map of the area
-        // Fill map and find starting position
-        for (var i = 0; i < _input.Length; i++) // i is the row (Y)
-            for (var j = 0; j < _input[i].Length; j++) // j is the column (X)
+        for (var i = 0; i < _input.Length; i++) // "i" is the row (Y)
+            for (var j = 0; j < _input[i].Length; j++) // "j" is the column (X)
                 if ((map[i, j] = _input[i][j]) == '^') start = (X: j, Y: i); 
-        // Width * Height: Check all possible blockades
         var infiniteLoops = 0;
-        for (var i = 0; i < _input.Length; i++) // i is the row (Y)
-            for (var j = 0; j < _input[i].Length; j++) // j is the column (X)
-                infiniteLoops += DoesBlockadeCauseInfiniteLoop(map, start, (X: j, Y: i)); // Pass X as j and Y as i
-        
+        Parallel.For(0, _input.Length, (i) =>
+        {
+            for (var j = 0; j < _input[i].Length; j++)
+            {
+                Interlocked.Add(ref infiniteLoops, DoesBlockadeCauseInfiniteLoop(map, start, (X: j, Y: i)));
+            }
+        });
         return new ValueTask<string>($"{infiniteLoops}");
     }
 

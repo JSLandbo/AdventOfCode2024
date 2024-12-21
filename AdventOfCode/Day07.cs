@@ -11,23 +11,27 @@ public sealed class Day07 : BaseDay
 
     public override ValueTask<string> Solve_1()
     {
-        var total = _input.Select(e => 
-        (
-            Result: long.Parse(e.Split(": ")[0]),
-            Values: e.Split(": ")[1].Split(' ').Select(long.Parse).ToArray()
-        )).Sum(row => CheckNumberOne(row.Result, row.Values));
-
+        long total = 0;
+        _input.AsParallel().ForAll(e =>
+        {
+            var result = long.Parse(e.Split(": ")[0]);
+            var values = e.Split(": ")[1].Split(' ').Select(long.Parse).ToArray();
+            var valueToAdd = CheckNumberOne(result, values);
+            Interlocked.Add(ref total, valueToAdd);
+        });
         return new ValueTask<string>($"{total}");
     }
 
     public override ValueTask<string> Solve_2()
     {
-        var total = _input.Select(e =>
-        (
-            Result: long.Parse(e.Split(": ")[0]),
-            Values: e.Split(": ")[1].Split(' ').Select(long.Parse).ToArray()
-        )).Sum(row => CheckNumberTwo(row.Result, row.Values));
-
+        long total = 0;
+        _input.AsParallel().ForAll(e =>
+        {
+            var result = long.Parse(e.Split(": ")[0]);
+            var values = e.Split(": ")[1].Split(' ').Select(long.Parse).ToArray();
+            var valueToAdd = CheckNumberTwo(result, values);
+            Interlocked.Add(ref total, valueToAdd);
+        });
         return new ValueTask<string>($"{total}");
     }
 
