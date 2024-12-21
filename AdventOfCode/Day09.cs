@@ -92,9 +92,12 @@ public sealed class Day09 : BaseDay
         var count = 0;
         for (var i = 0; i < maxIndex; i++)
         {
-            if (block[i] == number) count++;
-            if (count >= length) return i - length + 1;
-            if (block[i] != number) count = 0;
+            if (block[i] == number)
+            {
+                count++;
+                if (count == length) return i - length + 1;
+            }
+            else count = 0;
         }
         return -1;
     }

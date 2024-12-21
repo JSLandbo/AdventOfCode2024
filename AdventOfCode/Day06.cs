@@ -65,7 +65,7 @@ public sealed class Day06 : BaseDay
 
     // Helper methods
     
-    private static bool TrailingOffMap2D(char[,] map, (int X, int Y) next) => next.X >= map.GetLength(1) || next.Y >= map.GetLength(0) || next.X < 0 || next.Y < 0;
+    private static bool TrailingOffMap2D(int width, int height, (int X, int Y) next) => next.X >= width || next.Y >= height || next.X < 0 || next.Y < 0;
     
     private static bool TrailingOffMap3D(char[,,] map, (int X, int Y) next) => next.X >= map.GetLength(1) || next.Y >= map.GetLength(0) || next.X < 0 || next.Y < 0;
     
@@ -73,8 +73,10 @@ public sealed class Day06 : BaseDay
     
     private static int DoesBlockadeCauseInfiniteLoop(char[,] map, (int X, int Y) position, (int X,int Y) blockade)
     {
+        var width = map.GetLength(1);
+        var height = map.GetLength(0);
         if (map[blockade.Y, blockade.X] != '.') return 0; // Blockade must be on empty space
-        var visited = new bool[map.GetLength(0), map.GetLength(1), 4];
+        var visited = new bool[height, width, 4];
         var direction = (X:0, Y:-1); // Move up initially
         var directionIndex = 0; 
         while (true)
@@ -82,7 +84,7 @@ public sealed class Day06 : BaseDay
             if (visited[position.Y, position.X, directionIndex]) return 1;
             visited[position.Y, position.X, directionIndex] = true; 
             var nextPosition = (X:position.X + direction.X, Y:position.Y + direction.Y);
-            if (TrailingOffMap2D(map, nextPosition)) return 0; // Trailing off map, no infinite loop.
+            if (TrailingOffMap2D(width, height, nextPosition)) return 0; // Trailing off map, no infinite loop.
             if (map[nextPosition.Y, nextPosition.X] == '#' || nextPosition == blockade)
             {   // We will hit a blockade if we continue, turn right.
                 directionIndex = (directionIndex + 1) % 4;
