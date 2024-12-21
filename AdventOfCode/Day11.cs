@@ -29,25 +29,25 @@ public sealed class Day11 : BaseDay
     }
 
     private static readonly Dictionary<(BigInteger number, int steps), BigInteger> B4 = [];
-
     private static BigInteger RecursivelyRunThroughNumber(BigInteger number, int steps)
     {
-        if (steps == 0) return 1;
-        if (B4.ContainsKey((number, steps))) return B4[(number, steps)];
-        BigInteger sum = 0;
+        if (steps == 0) return 1; // Nothing more to do (nice) and I am a single block, return me!
+        if (B4.ContainsKey((number, steps))) return B4[(number, steps)]; // Dont reiterate same number and steps..
+        BigInteger sum = 0; // BigInteger 2^68685922272 (256MB memory) digits
+        // 0 => 1, next step.
         if (number == 0) sum += RecursivelyRunThroughNumber(1, steps - 1);
         else
-        {
-            var length = (int)BigInteger.Log10(number) + 1;
+        {   // Uneven number, multiply by 2024 and continue 
+            var length = (int)BigInteger.Log10(number) + 1; // Number of digits
             if (length % 2 != 0) sum += RecursivelyRunThroughNumber(number * 2024, steps - 1);
             else
-            {
+            {   // Even number, split in half and continue
                 var half = length / 2;
-                sum += RecursivelyRunThroughNumber(number / BigInteger.Pow(10, half), steps - 1) +
-                       RecursivelyRunThroughNumber(number % BigInteger.Pow(10, half), steps - 1);
+                sum += RecursivelyRunThroughNumber(number / BigInteger.Pow(10, half), steps - 1) + // First half
+                       RecursivelyRunThroughNumber(number % BigInteger.Pow(10, half), steps - 1);  // Second half
             }
         }
-        B4[(number, steps)] = sum;
+        B4[(number, steps)] = sum; // We are going to return now, save this result in case we hit this number and step again
         return sum;
     }
 
