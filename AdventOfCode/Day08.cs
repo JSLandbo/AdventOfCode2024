@@ -65,7 +65,9 @@ public sealed class Day08 : BaseDay
                     var antinodeX = mainnode.x + dx * 2;
                     var antinodeY = mainnode.y + dy * 2;
                     if (antinodeX >= 0 && antinodeX < width && antinodeY >= 0 && antinodeY < height)
+                    {
                         antinodes[antinodeY, antinodeX] = true;
+                    }
                 }
             }
         }
