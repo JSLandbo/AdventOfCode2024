@@ -12,6 +12,13 @@ public sealed class Day14 : BaseDay
     public override ValueTask<string> Solve_1()
     {
         var robots = GetRobots(_input);
+        
+        var width = _input[0].Length;
+        var height = _input.Length;
+        
+        // Velocity * count of moves % map size x, y
+        
+        // Count the amount of robots in each of the 4 quadrants, multiply them together to get the safety factor
 
         return default;
     }

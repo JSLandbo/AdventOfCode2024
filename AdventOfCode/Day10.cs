@@ -23,6 +23,8 @@ public sealed class Day10 : BaseDay
         return new ValueTask<string>($"{trails}");
     }
     
+    // Helper methods
+    
     private static int FindCountOfTrails(HashSet<(int x, int y)> taken, (int x,  int y) pos, int[][] map, bool distinct)
     {
         if (distinct && !taken.Add(pos)) return 0;

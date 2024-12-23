@@ -24,6 +24,8 @@ public sealed class Day09 : BaseDay
         var result = compressed.Select((number, index) => number < 1 ? 0 : (long)number * index).Sum();
         return new ValueTask<string>($"{result}");
     }
+    
+    // Helper methods
 
     private static (int count, int[] block) CompressSinglesBlock(int[] block)
     {

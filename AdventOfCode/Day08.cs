@@ -31,6 +31,8 @@ public sealed class Day08 : BaseDay
         return new ValueTask<string>($"{result}");
     }
 
+    // Helper methods
+    
     private static Dictionary<char, HashSet<(int x, int y)>> GetNodes(char[][] map)
     {
         Dictionary<char, HashSet<(int x, int y)>> nodes = [];

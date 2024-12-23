@@ -18,6 +18,15 @@ public sealed class Day11 : BaseDay
         return new ValueTask<string>($"{result}");
     }
 
+    public override ValueTask<string> Solve_2()
+    {
+        var numbers = _input.Split(' ').Select(long.Parse).ToArray();
+        var result = RunThroughNumbers(numbers, 75);
+        return new ValueTask<string>($"{result}");
+    }
+    
+    // Helper methods
+    
     private static BigInteger RunThroughNumbers(long[] numbers, int steps)
     {
         return numbers.Sum(number => RecursivelyRunThroughNumber(number, steps));
@@ -46,10 +55,4 @@ public sealed class Day11 : BaseDay
         return sum;
     }
 
-    public override ValueTask<string> Solve_2()
-    {
-        var numbers = _input.Split(' ').Select(long.Parse).ToArray();
-        var result = RunThroughNumbers(numbers, 75);
-        return new ValueTask<string>($"{result}");
-    }
 }
