@@ -36,19 +36,19 @@ public sealed class Day14 : BaseDay
         const int width = 101;
         const int height = 103;
         var steps = 0;
-        while (MoveRobots(robots, width, height, steps++).Any(e => e.Value != 1));
+        while (MoveRobots(robots, width, height, ++steps).Any(e => e.Value != 1));
         return new ValueTask<string>($"{steps}");
     }
 
-    private static Dictionary<(int x, int y), int> MoveRobots(IEnumerable<((int x, int y) position, (int x, int y) velocity)> robots, int width, int height, int steps)
+    private static Dictionary<(int x, int y), int> MoveRobots(((int x, int y) position, (int x, int y) velocity)[] robots, int width, int height, int steps)
     {
         var result = new Dictionary<(int x, int y), int>();
         foreach (var robot in robots)
         {
-            var x = (robot.position.x + (robot.velocity.x * steps)) % width;
-            var y = (robot.position.y + (robot.velocity.y * steps)) % height;
-            x = x < 0 ? x + width : x; // Minus coordinates => move into map
-            y = y < 0 ? y + height : y; // Minus coordinates => move into map
+            var x = (robot.position.x + robot.velocity.x * steps) % width;
+            var y = (robot.position.y + robot.velocity.y * steps) % height;
+            if (x < 0) x += width; // If minus coordinates, move into map
+            if (y < 0) y += height; // If minus coordinates, move into map
             if (!result.TryAdd((x, y), 1)) result[(x, y)]++;
         }
         return result;
