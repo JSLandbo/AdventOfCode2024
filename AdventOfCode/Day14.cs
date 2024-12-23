@@ -22,45 +22,36 @@ public sealed class Day14 : BaseDay
         const int halfWidth = width / 2;
         const int halfHeight = height / 2;
 
-        var topLeftQuadrant = moved.Count(e => e is { x: < halfWidth, y: < halfHeight });
-        var topRightQuadrant = moved.Count(e => e is { x: > halfWidth, y: < halfHeight });
-        var bottomLeftQuadrant = moved.Count(e => e is { x: < halfWidth, y: > halfHeight });
-        var bottomRightQuadrant = moved.Count(e => e is { x: > halfWidth, y: > halfHeight });
+        var topLeftQuadrantSum = moved.Where(e => e.Key is { x: < halfWidth, y: < halfHeight }).Sum(e => e.Value);
+        var topRightQuadrantSum = moved.Where(e => e.Key is { x: > halfWidth, y: < halfHeight }).Sum(e => e.Value);
+        var bottomLeftQuadrantSum = moved.Where(e => e.Key is { x: < halfWidth, y: > halfHeight }).Sum(e => e.Value);
+        var bottomRightQuadrantSum = moved.Where(e => e.Key is { x: > halfWidth, y: > halfHeight }).Sum(e => e.Value);
 
-        return new ValueTask<string>(
-            $"{topLeftQuadrant * topRightQuadrant * bottomLeftQuadrant * bottomRightQuadrant}");
+        return new ValueTask<string>($"{topLeftQuadrantSum * topRightQuadrantSum * bottomLeftQuadrantSum * bottomRightQuadrantSum}");
     }
 
     public override ValueTask<string> Solve_2()
     {
         var robots = GetRobots(_input);
-
         const int width = 101;
         const int height = 103;
-
         var steps = 0;
-        while (true)
-        {
-            steps++;
-            var moved = MoveRobots(robots, width, height, steps);
-            if (!MoveRobots(robots, width, height, steps).Any(e => moved.Count(t => t == e) > 1)) break;
-        }
-
+        while (MoveRobots(robots, width, height, steps++).Any(e => e.Value != 1));
         return new ValueTask<string>($"{steps}");
     }
 
-    private static IEnumerable<(int x, int y)> MoveRobots(IEnumerable<((int x, int y) position, (int x, int y) velocity)> robots, int width, int height, int steps)
+    private static Dictionary<(int x, int y), int> MoveRobots(IEnumerable<((int x, int y) position, (int x, int y) velocity)> robots, int width, int height, int steps)
     {
-        return robots.Select(
-            t => (
-                x: (t.position.x + (t.velocity.x * steps)) % width,
-                y: (t.position.y + (t.velocity.y * steps)) % height
-            )).Select(e =>
-            {
-                e.x = e.x < 0 ? e.x + width : e.x;
-                e.y = e.y < 0 ? e.y + height : e.y;
-                return e;
-            });
+        var result = new Dictionary<(int x, int y), int>();
+        foreach (var robot in robots)
+        {
+            var x = (robot.position.x + (robot.velocity.x * steps)) % width;
+            var y = (robot.position.y + (robot.velocity.y * steps)) % height;
+            x = x < 0 ? x + width : x; // Minus coordinates => move into map
+            y = y < 0 ? y + height : y; // Minus coordinates => move into map
+            if (!result.TryAdd((x, y), 1)) result[(x, y)]++;
+        }
+        return result;
     }
 
     private static ((int x, int y) position, (int x, int y) velocity)[] GetRobots(string[] input)
