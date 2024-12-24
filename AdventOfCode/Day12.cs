@@ -12,8 +12,7 @@ public sealed class Day12 : BaseDay
     public override ValueTask<string> Solve_1()
     {
         var map = _input.Select(e => e.ToArray()).ToArray();
-        var groups = GetFigures(map);
-        var results = groups.Select(group => {
+        var results = GetFigures(map).AsParallel().Select(group => {
             var area = GetArea(group);
             var circumference = GetCircumference(group.Select(e => (e.X, e.Y)).ToArray());
             return new
@@ -31,7 +30,7 @@ public sealed class Day12 : BaseDay
     public override ValueTask<string> Solve_2()
     {
         var map = _input.Select(e => e.ToArray()).ToArray();
-        var results = GetFigures(map).Select(group => {
+        var results = GetFigures(map).AsParallel().Select(group => {
             var area = GetArea(group);
             var sides = GetSides(group.Select(e => (e.X, e.Y)).ToHashSet());
             return new 

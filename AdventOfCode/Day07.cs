@@ -24,14 +24,14 @@ public sealed class Day07 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
-        long total = 0;
-        _input.AsParallel().ForAll(e =>
-        {
-            var result = long.Parse(e.Split(": ")[0]);
-            var values = e.Split(": ")[1].Split(' ').Select(long.Parse).ToArray();
-            var valueToAdd = CheckNumberTwo(result, values);
-            Interlocked.Add(ref total, valueToAdd);
-        });
+        var total = _input.AsParallel()
+            .Select(e =>
+            {
+                var result = long.Parse(e.Split(": ")[0]);
+                var values = e.Split(": ")[1].Split(' ').Select(long.Parse).ToArray();
+                return CheckNumberTwo(result, values);
+            })
+            .Sum();
         return new ValueTask<string>($"{total}");
     }
 
@@ -44,7 +44,7 @@ public sealed class Day07 : BaseDay
         var newList = new long[numbers.Length];
         for (var i = 0; i < numbers.Length; i++)
             newList[i] = numbers[i];
-        
+
         var num1 = newList[0];
         var num2 = newList[1];
 
@@ -64,7 +64,7 @@ public sealed class Day07 : BaseDay
         var newList = new long[numbers.Length];
         for (var i = 0; i < numbers.Length; i++)
             newList[i] = numbers[i];
-        
+
         var num1 = newList[0];
         var num2 = newList[1];
 
@@ -75,7 +75,7 @@ public sealed class Day07 : BaseDay
         newList[1] = num1 * num2;
         var result2 = CheckNumberTwo(target, newList[1..]);
         if (result2 != 0) return result2;
-        
+
         // "Math.Pow(10, (long)Math.Log10(num2) + 1" = length of num2.
         // 145 & 2104: 145 * 10^4 = 1450000. 1450000 + 2104 = 1452104
         newList[1] = (long)(num1 * Math.Pow(10, (short)Math.Log10(num2) + 1) + num2);

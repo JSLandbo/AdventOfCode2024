@@ -17,7 +17,7 @@ public sealed class Day14 : BaseDay
         const int height = 103;
         const int steps = 100;
 
-        var moved = MoveRobots(robots, width, height, steps).ToArray();
+        var moved = MoveRobots(robots, width, height, steps);
 
         const int halfWidth = width / 2;
         const int halfHeight = height / 2;
