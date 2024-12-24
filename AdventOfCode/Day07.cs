@@ -24,14 +24,14 @@ public sealed class Day07 : BaseDay
 
     public override ValueTask<string> Solve_2()
     {
-        var total = _input.AsParallel()
-            .Select(e =>
-            {
-                var result = long.Parse(e.Split(": ")[0]);
-                var values = e.Split(": ")[1].Split(' ').Select(long.Parse).ToArray();
-                return CheckNumberTwo(result, values);
-            })
-            .Sum();
+        long total = 0;
+        _input.AsParallel().ForAll(e =>
+        {
+            var result = long.Parse(e.Split(": ")[0]);
+            var values = e.Split(": ")[1].Split(' ').Select(long.Parse).ToArray();
+            var valueToAdd = CheckNumberTwo(result, values);
+            Interlocked.Add(ref total, valueToAdd);
+        });
         return new ValueTask<string>($"{total}");
     }
 
