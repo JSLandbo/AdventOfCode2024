@@ -20,7 +20,7 @@ public sealed class Day09 : BaseDay
     public override ValueTask<string> Solve_2()
     {
         var row = BuildBlocks(_input).ToArray();
-        var compressed = CompressChunkedBlock((int[])row.Clone());
+        var compressed = CompressChunkedBlock(row);
         var result = compressed.Select((number, index) => number < 1 ? 0 : (long)number * index).Sum();
         return new ValueTask<string>($"{result}");
     }
