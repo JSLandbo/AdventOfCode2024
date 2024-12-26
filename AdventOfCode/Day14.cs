@@ -17,7 +17,7 @@ public sealed class Day14 : BaseDay
         const int height = 103;
         const int steps = 100;
 
-        var moved = MoveRobots(robots, width, height, steps);
+        var moved = MoveRobotsNewPositions(robots, width, height, steps);
 
         const int halfWidth = width / 2;
         const int halfHeight = height / 2;
@@ -55,7 +55,7 @@ public sealed class Day14 : BaseDay
         return true;
     }
     
-    private static Dictionary<(int x, int y), int> MoveRobots(((int x, int y) position, (int x, int y) velocity)[] robots, int width, int height, int steps)
+    private static Dictionary<(int x, int y), int> MoveRobotsNewPositions(((int x, int y) position, (int x, int y) velocity)[] robots, int width, int height, int steps)
     {
         var result = new Dictionary<(int x, int y), int>();
         foreach (var robot in robots)
