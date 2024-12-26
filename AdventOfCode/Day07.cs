@@ -41,18 +41,15 @@ public sealed class Day07 : BaseDay
     {
         if (numbers.Length == 1) return target == numbers[0] ? target : 0;
 
-        var newList = new long[numbers.Length];
-        Buffer.BlockCopy(numbers, 0, newList, 0, numbers.Length * sizeof(long));
+        var num1 = numbers[0];
+        var num2 = numbers[1];
 
-        var num1 = newList[0];
-        var num2 = newList[1];
-
-        newList[1] = num1 + num2;
-        var result1 = CheckNumberOne(target, newList[1..]);
+        numbers[1] = num1 + num2;
+        var result1 = CheckNumberOne(target, numbers[1..]);
         if (result1 != 0) return result1;
 
-        newList[1] = num1 * num2;
-        var result2 = CheckNumberOne(target, newList[1..]);
+        numbers[1] = num1 * num2;
+        var result2 = CheckNumberOne(target, numbers[1..]);
         return result2 != 0 ? result2 : 0;
     }
 
@@ -60,24 +57,19 @@ public sealed class Day07 : BaseDay
     {
         if (numbers.Length == 1) return target == numbers[0] ? target : 0;
 
-        var newList = new long[numbers.Length];
-        Buffer.BlockCopy(numbers, 0, newList, 0, numbers.Length * sizeof(long));
-        
-        var num1 = newList[0];
-        var num2 = newList[1];
+        var num1 = numbers[0];
+        var num2 = numbers[1];
 
-        newList[1] = num1 + num2;
-        var result1 = CheckNumberTwo(target, newList[1..]);
+        numbers[1] = num1 + num2;
+        var result1 = CheckNumberTwo(target, numbers[1..]);
         if (result1 != 0) return result1;
 
-        newList[1] = num1 * num2;
-        var result2 = CheckNumberTwo(target, newList[1..]);
+        numbers[1] = num1 * num2;
+        var result2 = CheckNumberTwo(target, numbers[1..]);
         if (result2 != 0) return result2;
 
-        // "Math.Pow(10, (long)Math.Log10(num2) + 1" = length of num2. 
-        // 145 & 2104: 145 * 10^4 = 1450000. 1450000 + 2104 = 1452104
-        newList[1] = (long)(num1 * Math.Pow(10, (short)Math.Log10(num2) + 1) + num2);
-        var result3 = CheckNumberTwo(target, newList[1..]);
+        numbers[1] = (long)(num1 * Math.Pow(10, (short)Math.Log10(num2) + 1) + num2);
+        var result3 = CheckNumberTwo(target, numbers[1..]);
         return result3;
     }
 }
