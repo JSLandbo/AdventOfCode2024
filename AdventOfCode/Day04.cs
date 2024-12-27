@@ -40,12 +40,10 @@ public sealed class Day04 : BaseDay
         {
             var xLimit = x + 3;
             foreach (var y in Enumerable.Range(0, height))
-            {
+            {   // Check for XMAS in all directions
                 if (content[x][y] != 'X') continue;
-            
                 var yLimit = y + 3;
                 var count = 0;
-            
                 if (x > 2           && (content[x-1][y], content[x-2][y], content[x-3][y]) is ('M','A','S')) count += 1; // Left
                 if (y > 2           && (content[x][y-1], content[x][y-2], content[x][y-3]) is ('M','A','S')) count += 1; // Up
                 if (xLimit < width  && (content[x+1][y], content[x+2][y], content[x+3][y]) is ('M','A','S')) count += 1; // Right

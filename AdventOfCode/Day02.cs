@@ -15,13 +15,12 @@ public sealed class Day02 : BaseDay
         const int maxChange = 3;
         var result = 0;
         foreach (var t in input)
-        {
+        {   // Check chain for every number in array
             var allIncreasingSafely = Enumerable.Range(1, t.Length - 1).All(idx => t[idx - 1] < t[idx] && Math.Abs(t[idx - 1] - t[idx]) <= maxChange);
             var allDecreasingSafely = !allIncreasingSafely && Enumerable.Range(1, t.Length - 1).All(idx => t[idx - 1] > t[idx] && Math.Abs(t[idx - 1] - t[idx]) <= maxChange);
             if (!allIncreasingSafely && !allDecreasingSafely) continue;
             result++;
         }
-
         return new ValueTask<string>($"{result}");
     }
 
@@ -33,19 +32,18 @@ public sealed class Day02 : BaseDay
         foreach (var ot in input)
         {
             var allIncreasingSafely = Enumerable.Range(0, ot.Length).Any(x =>
-                {   // Check chain for every number in array
-                    var nt = ot.Where((_, index) => index != x).ToArray(); // Skip this index, check all other numbers. We allow 1 faulty.
-                    return Enumerable.Range(1, nt.Length - 1).All(idx => nt[idx - 1] < nt[idx] && Math.Abs(nt[idx - 1] - nt[idx]) <= maxChange);
-                });
+            {   // Check chain for every number in array
+                var nt = ot.Where((_, index) => index != x).ToArray(); // Skip this index, check all other numbers. We allow 1 faulty.
+                return Enumerable.Range(1, nt.Length - 1).All(idx => nt[idx - 1] < nt[idx] && Math.Abs(nt[idx - 1] - nt[idx]) <= maxChange);
+            });
             var allDecreasingSafely = !allIncreasingSafely && Enumerable.Range(0, ot.Length).Any(x =>
-                {   // Check chain for every number in array
-                    var nt = ot.Where((_, index) => index != x).ToArray(); // Skip this index, check all other numbers. We allow 1 faulty.
-                    return Enumerable.Range(1, nt.Length - 1).All(idx => nt[idx - 1] > nt[idx] && Math.Abs(nt[idx - 1] - nt[idx]) <= maxChange);
-                });
+            {   // Check chain for every number in array
+                var nt = ot.Where((_, index) => index != x).ToArray(); // Skip this index, check all other numbers. We allow 1 faulty.
+                return Enumerable.Range(1, nt.Length - 1).All(idx => nt[idx - 1] > nt[idx] && Math.Abs(nt[idx - 1] - nt[idx]) <= maxChange);
+            });
             if (!allIncreasingSafely && !allDecreasingSafely) continue;
             result++;
         }
-
         return new ValueTask<string>($"{result}");
     }
 }

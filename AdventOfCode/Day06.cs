@@ -15,9 +15,16 @@ public sealed class Day06 : BaseDay
         var currentPosition = (X: 0, Y: 0);
         var map = new char[_input.Length, _input[0].Length, 2]; // Map of the area
         // Fill map and find starting position
-        for (var i = 0; i < _input.Length; i++) // i is the row (Y)
-            for (var j = 0; j < _input[i].Length; j++) // j is the column (X)
-                if ((map[i, j, 0] = _input[i][j]) == '^') currentPosition = (X: j, Y: i); 
+        for (var y = 0; y < _input.Length; y++)
+        {
+            for (var x = 0; x < _input[y].Length; x++)
+            {
+                if ((map[y, x, 0] = _input[y][x]) == '^')
+                {
+                    currentPosition = (X: x, Y: y); 
+                }
+            }
+        }
         var direction = (X: 0, Y: -1);
         while (true)
         {   // Loop until trailing off map, and turn right if there's a hindrance
@@ -42,7 +49,6 @@ public sealed class Day06 : BaseDay
             }
             currentPosition = nextPosition;
         }
-
         return new ValueTask<string>($"{result}");
     }
 
@@ -50,9 +56,16 @@ public sealed class Day06 : BaseDay
     {
         var start = (X: 0, Y: 0); // Starting position        
         var map = new char[_input.Length, _input[0].Length]; // Map of the area
-        for (var i = 0; i < _input.Length; i++) // "i" is the row (Y)
-            for (var j = 0; j < _input[i].Length; j++) // "j" is the column (X)
-                if ((map[i, j] = _input[i][j]) == '^') start = (X: j, Y: i); 
+        for (var y = 0; y < _input.Length; y++)
+        {
+            for (var x = 0; x < _input[y].Length; x++)
+            {
+                if ((map[y, x] = _input[y][x]) == '^')
+                {
+                    start = (X: x, Y: y); 
+                }
+            }
+        }
         var infiniteLoops = 0;
         Parallel.For(0, _input.Length, (i) =>
         {

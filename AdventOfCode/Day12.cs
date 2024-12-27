@@ -23,7 +23,6 @@ public sealed class Day12 : BaseDay
                 Price = area * circumference
             };
         }).ToList();
-        
         return new ValueTask<string>($"{results.Sum(e => e.Price)}");
     }
 
@@ -41,7 +40,6 @@ public sealed class Day12 : BaseDay
                 SidesPrice = area * sides
             };
         }).ToList();
-
         return new ValueTask<string>($"{results.Sum(e => e.SidesPrice)}");
     }
 
@@ -53,7 +51,6 @@ public sealed class Day12 : BaseDay
         var up = new HashSet<(int PosX, int PosY)>();
         var right = new HashSet<(int PosX, int PosY)>();
         var down = new HashSet<(int PosX, int PosY)>();
-        
         foreach (var pos in figure)
         {
             if (!figure.Contains(MoveLeft(pos))) left.Add(pos);
@@ -61,12 +58,10 @@ public sealed class Day12 : BaseDay
             if (!figure.Contains(MoveUp(pos))) up.Add(pos);
             if (!figure.Contains(MoveDown(pos))) down.Add(pos);
         }
-        
         var leftWalls = GetNonAdjacentWalls(left, Dirs.up);
         var topWalls = GetNonAdjacentWalls(up, Dirs.right);
         var rightWalls = GetNonAdjacentWalls(right, Dirs.down);
         var bottomWalls = GetNonAdjacentWalls(down, Dirs.left);
-        
         return leftWalls + topWalls + bottomWalls + rightWalls;
     }
 
@@ -114,17 +109,13 @@ public sealed class Day12 : BaseDay
     private static void GetAdjacent(char[][] map, bool[,] visited, char current, int x, int y, List<(int X, int Y, char C)> figure)
     {
         if (visited[y,x]) return;
-        
         figure.Add((x, y, current));
-        
         visited[y, x] = true;
-        
         if (LeftIsSame()) GetAdjacent(map, visited, current, x - 1, y, figure); // Left, within width bounds
         if (RightIsSame()) GetAdjacent(map, visited, current, x + 1, y, figure); // Right, within width bounds
         if (UpIsSame()) GetAdjacent(map, visited, current, x, y - 1, figure); // Top, within height bounds
         if (DownIsSame()) GetAdjacent(map, visited, current, x, y + 1, figure); // Bottom, within height bounds
         return;
-
         bool LeftIsSame() => x != 0 && map[y][x - 1] == current;
         bool RightIsSame() => x != map[0].Length - 1 && map[y][x + 1] == current;
         bool UpIsSame() => y != 0 && map[y - 1][x] == current;

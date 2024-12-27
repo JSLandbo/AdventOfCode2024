@@ -46,7 +46,6 @@ public sealed class Day08 : BaseDay
                 nodes[ch].Add((x,y));
             }
         }
-        
         return nodes;
     }
     
@@ -73,7 +72,6 @@ public sealed class Day08 : BaseDay
                 }
             }
         }
-        
         return antinodes;
     }
     
@@ -110,7 +108,6 @@ public sealed class Day08 : BaseDay
                 }
             }
         }
-        
         return antinodes;
     }
 }

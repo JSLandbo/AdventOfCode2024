@@ -16,7 +16,6 @@ public sealed class Day03 : BaseDay
         var regex = new Regex(@"mul\((\d+),(\d+)\)");
         var input = regex.Matches(_input);
         var sum = input.Select(matchCollection => matchCollection).Sum(match => int.Parse(match.Groups[1].Value) * int.Parse(match.Groups[2].Value));
-        
         return new ValueTask<string>($"{sum}");
     }
 
@@ -28,14 +27,13 @@ public sealed class Day03 : BaseDay
         var builder = new StringBuilder();
         var going = true;
         for (var i = 0; i < _input.Length; i++)
-        {
+        {   // Only append if we are in the "do()" section
             if (dos.Contains(i)) going = true;
             if (donts.Contains(i)) going = false;
             if (going) builder.Append(_input[i]);
         }
         var input = regex.Matches(builder.ToString());
         var sum = input.Sum(match => int.Parse(match.Groups[1].Value) * int.Parse(match.Groups[2].Value));
-        
         return new ValueTask<string>($"{sum}");
     }
 }

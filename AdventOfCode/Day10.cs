@@ -31,14 +31,11 @@ public sealed class Day10 : BaseDay
         var value = map[pos.y][pos.x];
         if (value == 9) return 1;
         var sum = 0;
-
         if (LeftIsNext()) sum += FindCountOfTrails(taken, (pos.x - 1, pos.y), map, distinct);
         if (RightIsNext()) sum += FindCountOfTrails(taken, (pos.x + 1, pos.y), map, distinct);
         if (UpIsNext()) sum += FindCountOfTrails(taken, (pos.x, pos.y - 1), map, distinct);
         if (DownIsNext()) sum += FindCountOfTrails(taken, (pos.x, pos.y + 1), map, distinct);
-        
         return sum;
-        
         bool LeftIsNext() => pos.x != 0 && map[pos.y][pos.x - 1] == value + 1;
         bool RightIsNext() => pos.x != map[0].Length - 1 && map[pos.y][pos.x + 1] == value + 1;
         bool UpIsNext() => pos.y != 0 && map[pos.y - 1][pos.x] == value + 1;

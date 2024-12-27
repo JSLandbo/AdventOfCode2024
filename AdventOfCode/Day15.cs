@@ -18,9 +18,15 @@ public sealed class Day15 : BaseDay
         }
         var sum = 0;
         for (var y = 0; y < info.map.GetLength(0); y++)
+        {
             for (var x = 0; x < info.map.GetLength(1); x++)
+            {
                 if (info.map[y, x] == 'O')
+                {
                     sum += 100 * y + x;
+                }
+            }
+        }
         return new ValueTask<string>($"{sum}");
     }
 
@@ -28,6 +34,8 @@ public sealed class Day15 : BaseDay
     {
         return default;
     }
+    
+    // Helper methods
 
     private static void AttemptStep((int x, int y) step, ref char[,] map, ref (int x, int y) position)
     {
@@ -70,7 +78,9 @@ public sealed class Day15 : BaseDay
     private static void MoveBlocks((int x, int y) step, ref char[,] map, List<(int x, int y)> blocks)
     {
         foreach (var block in blocks)
+        {
             map[block.y + step.y, block.x + step.x] = 'O';
+        }
     }
     
     private static void MovePlayer((int x, int y) step, ref char[,] map, ref (int x, int y) position)
@@ -79,7 +89,6 @@ public sealed class Day15 : BaseDay
         position.x += step.x;
         position.y += step.y;
         map[position.y, position.x] = '@';
-        
     }
     
     private static (char[,] map, (int x, int y)[] steps, (int x, int y) position) GetInfo(string[] input)
@@ -89,13 +98,23 @@ public sealed class Day15 : BaseDay
         var position = (x: -1, y: -1);
         var map = new char[height, width];
         for (var y = 0; y < height; y++)
+        {
             for (var x = 0; x < width; x++)
+            {
                 if ((map[y, x] = input[y][x]) == '@')
+                {
                     position = (x, y);
+                }
+            }
+        }
         var steps = new List<(int x, int y)>();
         for (var y = height + 1; y < input.Length; y++)
+        {
             for (var x = 0; x < input[y].Length; x++)
+            {
                 steps.Add(GetStep(input[y][x]));
+            }
+        }
         return (map, steps.ToArray(), position);
     }
 
