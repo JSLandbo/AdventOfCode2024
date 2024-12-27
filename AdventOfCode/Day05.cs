@@ -73,44 +73,20 @@ public sealed class Day05 : BaseDay
     }
     
     private static int[] SortNumbers(int[] numbers, Dictionary<int, List<int>> rules)
-    {   // Standard Kahn's algorithm
-        var inDegree = new Dictionary<int, int>();
-        var graph = new Dictionary<int, List<int>>();
-        foreach (var number in numbers)
+    {
+        Array.Sort(numbers, (x, y) =>
         {
-            inDegree[number] = 0;
-            graph[number] = [];
-        }
-        foreach (var (before, afters) in rules)
-        {
-            if (!inDegree.ContainsKey(before)) continue;
-            foreach (var after in afters.Where(after => inDegree.ContainsKey(after)))
-            {
-                graph[before].Add(after);
-                inDegree[after]++;
+            if (rules.TryGetValue(x, out var numOne) && numOne.Contains(y))
+            {   // x should come before y
+                return -1;  
             }
-        }
-        var queue = new Queue<int>();
-        foreach (var number in inDegree.Where(e => e.Value == 0))
-        {
-            queue.Enqueue(number.Key);
-        }
-        var result = new List<int>();
-        while (queue.Count > 0)
-        {
-            var current = queue.Dequeue();
-            result.Add(current);
-            foreach (var neighbor in graph[current])
-            {
-                inDegree[neighbor]--;
-                if (inDegree[neighbor] == 0)
-                {
-                    queue.Enqueue(neighbor);
-                }
+            if (rules.TryGetValue(y, out var numTwo) && numTwo.Contains(x))
+            {   // y should come before x
+                return 1;  
             }
-        }
-        if (result.Count != numbers.Length) throw new Exception("Cycle detected");
-        return result.ToArray();
+            return 0;
+        });
+        return numbers;
     }
 
     private static int GetMediansSum(List<int[]> lines) => lines.Select(line => line.Length % 2 == 0 ? line[line.Length / 2] : line[(line.Length - 1) / 2]).Sum();
