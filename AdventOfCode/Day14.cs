@@ -44,8 +44,8 @@ public sealed class Day14 : BaseDay
         {
             var x = (robot.position.x + robot.velocity.x * steps) % width;
             var y = (robot.position.y + robot.velocity.y * steps) % height;
-            if (x < 0) x += width; 
-            if (y < 0) y += height;
+            if (x < 0) x += width; // If minus coordinates, move into map
+            if (y < 0) y += height; // If minus coordinates, move into map
             if (result[x, y]) return false;
             result[x, y] = true;
         }
