@@ -101,16 +101,15 @@ public sealed class Day09 : BaseDay
         return -1;
     }
     
-    private static List<int> BuildBlocks(string input)
+    private static List<int> BuildBlocks(ReadOnlySpan<char> input)
     {
         List<int> blocks = [];
-        var line = input.ToArray();
         for (var i = 0; i < input.Length; i+= 2)
         {
-            var n1 = line[i] - '0';
+            var n1 = input[i] - '0';
             for (var j = 0; j < n1; j++) blocks.Add(i / 2);
             if (i + 1 >= input.Length) break;
-            var n2 = line[i + 1] - '0';
+            var n2 = input[i + 1] - '0';
             for (var j = 0; j < n2; j++) blocks.Add(-1);
         }
         return blocks;
