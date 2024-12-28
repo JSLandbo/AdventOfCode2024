@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode;
+﻿using System.Collections;
+
+namespace AdventOfCode;
 
 public sealed class Day06 : BaseDay
 {
@@ -11,7 +13,7 @@ public sealed class Day06 : BaseDay
 
     public override ValueTask<string> Solve_1()
     {
-        var result = 0;
+        int result;
         var currentPosition = (X: 0, Y: 0);
         var map = new char[_input.Length, _input[0].Length, 2]; // Map of the area
         // Fill map and find starting position
@@ -90,13 +92,14 @@ public sealed class Day06 : BaseDay
         if (map[blockade.Y, blockade.X] != '.') return 0; // Blockade must be on empty space
         var width = map.GetLength(1);
         var height = map.GetLength(0);
-        var visited = new bool[height, width, 4];
+        var visited = new BitArray(height * width * 4);
         var direction = (X:0, Y:-1); // Move up initially
         var directionIndex = 0; 
         while (true)
         {   // If we've been here before with the same direction then it's an infinite loop.
-            if (visited[position.Y, position.X, directionIndex]) return 1;
-            visited[position.Y, position.X, directionIndex] = true; 
+            var positionIndex = (position.Y * width + position.X) * 4 + directionIndex; // Unique index
+            if (visited[positionIndex]) return 1;
+            visited[positionIndex] = true;
             var nextPosition = (X:position.X + direction.X, Y:position.Y + direction.Y);
             if (TrailingOffMap2D(width, height, nextPosition)) return 0; // Trailing off map, no infinite loop.
             if (map[nextPosition.Y, nextPosition.X] == '#' || nextPosition == blockade)
