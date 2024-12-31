@@ -11,16 +11,32 @@ public sealed class Day02 : BaseDay
 
     public override ValueTask<string> Solve_1()
     {
-        var input = _input.Select(e => e.Split(' ').Select(int.Parse).ToArray());
+        var input = _input.Select(e => e.Split(' ').Select(int.Parse).ToArray()).ToArray();
         const int maxChange = 3;
         var result = 0;
-        foreach (var t in input)
-        {   // Check chain for every number in array
-            var allIncreasingSafely = Enumerable.Range(1, t.Length - 1).All(idx => t[idx - 1] < t[idx] && Math.Abs(t[idx - 1] - t[idx]) <= maxChange);
-            var allDecreasingSafely = !allIncreasingSafely && Enumerable.Range(1, t.Length - 1).All(idx => t[idx - 1] > t[idx] && Math.Abs(t[idx - 1] - t[idx]) <= maxChange);
-            if (!allIncreasingSafely && !allDecreasingSafely) continue;
-            result++;
+        
+        foreach (var row in input)
+        {
+            var allIncreasingSafely = true;
+            var allDecreasingSafely = true;
+            for (var i = 1; i < row.Length; i++)
+            {
+                var curr = row[i];
+                var prev = row[i - 1];
+                var diff = Math.Abs(curr - prev);
+                if (diff > maxChange)
+                {
+                    allIncreasingSafely = false;
+                    allDecreasingSafely = false;
+                    break;
+                }
+                if (allIncreasingSafely && prev >= curr) allIncreasingSafely = false;
+                if (allDecreasingSafely && prev <= curr) allDecreasingSafely = false;
+                if (!allIncreasingSafely && !allDecreasingSafely) break;
+            }
+            if (allIncreasingSafely || allDecreasingSafely) result++;
         }
+        
         return new ValueTask<string>($"{result}");
     }
 
