@@ -47,14 +47,13 @@ public sealed class Day02 : BaseDay
         var result = 0;
         foreach (var row in input)
         {
-            var isSafeChain = Enumerable.Range(0, row.Length).Any(x =>
+            if (Enumerable.Range(0, row.Length).Any(x =>
             {
                 var nums = row.Where((_, index) => index != x).ToArray();
                 var isIncreasing = Enumerable.Range(1, nums.Length - 1).All(idx => nums[idx - 1] < nums[idx] && Math.Abs(nums[idx - 1] - nums[idx]) <= maxChange);
                 var isDecreasing = Enumerable.Range(1, nums.Length - 1).All(idx => nums[idx - 1] > nums[idx] && Math.Abs(nums[idx - 1] - nums[idx]) <= maxChange);
                 return isIncreasing || isDecreasing;
-            });
-            if (isSafeChain) result++;
+            })) result++;
         }
 
         return new ValueTask<string>($"{result}");
