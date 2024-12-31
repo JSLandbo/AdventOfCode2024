@@ -45,21 +45,18 @@ public sealed class Day02 : BaseDay
         var input = _input.Select(e => e.Split(' ').Select(int.Parse).ToArray());
         const int maxChange = 3;
         var result = 0;
-        foreach (var ot in input)
+        foreach (var row in input)
         {
-            var allIncreasingSafely = Enumerable.Range(0, ot.Length).Any(x =>
-            {   // Check chain for every number in array
-                var nt = ot.Where((_, index) => index != x).ToArray(); // Skip this index, check all other numbers. We allow 1 faulty.
-                return Enumerable.Range(1, nt.Length - 1).All(idx => nt[idx - 1] < nt[idx] && Math.Abs(nt[idx - 1] - nt[idx]) <= maxChange);
+            var isSafeChain = Enumerable.Range(0, row.Length).Any(x =>
+            {
+                var nums = row.Where((_, index) => index != x).ToArray();
+                var isIncreasing = Enumerable.Range(1, nums.Length - 1).All(idx => nums[idx - 1] < nums[idx] && Math.Abs(nums[idx - 1] - nums[idx]) <= maxChange);
+                var isDecreasing = Enumerable.Range(1, nums.Length - 1).All(idx => nums[idx - 1] > nums[idx] && Math.Abs(nums[idx - 1] - nums[idx]) <= maxChange);
+                return isIncreasing || isDecreasing;
             });
-            var allDecreasingSafely = !allIncreasingSafely && Enumerable.Range(0, ot.Length).Any(x =>
-            {   // Check chain for every number in array
-                var nt = ot.Where((_, index) => index != x).ToArray(); // Skip this index, check all other numbers. We allow 1 faulty.
-                return Enumerable.Range(1, nt.Length - 1).All(idx => nt[idx - 1] > nt[idx] && Math.Abs(nt[idx - 1] - nt[idx]) <= maxChange);
-            });
-            if (!allIncreasingSafely && !allDecreasingSafely) continue;
-            result++;
+            if (isSafeChain) result++;
         }
+
         return new ValueTask<string>($"{result}");
     }
 }
