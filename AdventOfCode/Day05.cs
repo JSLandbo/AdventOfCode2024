@@ -89,5 +89,5 @@ public sealed class Day05 : BaseDay
         return numbers;
     }
 
-    private static int GetMediansSum(List<int[]> lines) => lines.Select(line => line.Length % 2 == 0 ? line[line.Length / 2] : line[(line.Length - 1) / 2]).Sum();
+    private static int GetMediansSum(List<int[]> lines) => lines.Select(line => (line.Length & 1) == 0 ? line[line.Length / 2] : line[(line.Length - 1) / 2]).Sum();
 }

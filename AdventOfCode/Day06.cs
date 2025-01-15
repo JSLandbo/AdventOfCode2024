@@ -23,22 +23,25 @@ public sealed class Day06 : BaseDay
             {
                 if ((map[y, x, 0] = _input[y][x]) == '^')
                 {
-                    currentPosition = (X: x, Y: y); 
+                    currentPosition = (X: x, Y: y);
                 }
             }
         }
         var direction = (X: 0, Y: -1);
         while (true)
-        {   // Loop until trailing off map, and turn right if there's a hindrance
+        {
+            // Loop until trailing off map, and turn right if there's a hindrance
             map[currentPosition.Y, currentPosition.X, 1] = 'X'; // Mark step on map
             var nextPosition = (X: currentPosition.X + direction.X, Y: currentPosition.Y + direction.Y);
             if (TrailingOffMap3D(map, nextPosition))
-            {   // Trailing off map? Then end the loop and count tiles stepped on. 
+            {
+                // Trailing off map? Then end the loop and count tiles stepped on. 
                 result = GetCountOfUniqueTilesSteppedOn(map);
                 break;
             }
             if (map[nextPosition.Y, nextPosition.X, 0] == '#')
-            {   // Oops, hindrance hit! Turn right... 
+            {
+                // Oops, hindrance hit! Turn right... 
                 direction = direction switch
                 {
                     (0, -1) => (1, 0), // Up -> Right
@@ -64,10 +67,11 @@ public sealed class Day06 : BaseDay
             {
                 if ((map[y, x] = _input[y][x]) == '^')
                 {
-                    start = (X: x, Y: y); 
+                    start = (X: x, Y: y);
                 }
             }
         }
+
         var infiniteLoops = 0;
         Parallel.For(0, _input.Length, (i) =>
         {
@@ -80,13 +84,13 @@ public sealed class Day06 : BaseDay
     }
 
     // Helper methods
-    
+
     private static bool TrailingOffMap2D(int width, int height, (int X, int Y) next) => next.X >= width || next.Y >= height || next.X < 0 || next.Y < 0;
-    
-    private static bool TrailingOffMap3D(char[,,] map, (int X, int Y) next) => next.X >= map.GetLength(1) || next.Y >= map.GetLength(0) || next.X < 0 || next.Y < 0;
-    
+
+    private static bool TrailingOffMap3D(char[,,] map, (int X, int Y) next) =>  next.X >= map.GetLength(1) || next.Y >= map.GetLength(0) || next.X < 0 || next.Y < 0;
+
     private static int GetCountOfUniqueTilesSteppedOn(char[,,] map) => Enumerable.Range(0, map.GetLength(0)).SelectMany(i => Enumerable.Range(0, map.GetLength(1)).Where(j => map[i, j, 1] == 'X')).Count();
-    
+
     private static int DoesBlockadeCauseInfiniteLoop(char[,] map, (int X, int Y) position, (int X,int Y) blockade)
     {
         if (map[blockade.Y, blockade.X] != '.') return 0; // Blockade must be on empty space
@@ -94,7 +98,7 @@ public sealed class Day06 : BaseDay
         var height = map.GetLength(0);
         var visited = new BitArray(height * width * 4);
         var direction = (X:0, Y:-1); // Move up initially
-        var directionIndex = 0; 
+        var directionIndex = 0;
         while (true)
         {   // If we've been here before with the same direction then it's an infinite loop.
             var positionIndex = (position.Y * width + position.X) * 4 + directionIndex; // Unique index

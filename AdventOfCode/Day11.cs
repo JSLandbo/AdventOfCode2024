@@ -43,7 +43,7 @@ public sealed class Day11 : BaseDay
         else
         {   // Uneven number, multiply by 2024 and continue 
             var length = (int)Math.Log10(number) + 1; // Number of digits
-            if (length % 2 != 0) sum += RecursivelyRunThroughNumber(number * 2024, steps - 1);
+            if ((length & 1) != 0) sum += RecursivelyRunThroughNumber(number * 2024, steps - 1);
             else
             {   // Even number, split in half and continue
                 var half = length / 2;
